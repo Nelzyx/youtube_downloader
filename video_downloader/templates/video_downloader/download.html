@@ -1,0 +1,56 @@
+{% extends "video_downloader/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Статус загрузки</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Ссылка:</strong> {{ task.url }}
+                </div>
+                <div class="mb-3">
+                    <strong>Формат:</strong> {{ task.get_format_type_display }}
+                </div>
+                <div class="mb-3">
+                    <strong>Качество:</strong> {{ task.resolution }}
+                </div>
+                <div class="mb-3">
+                    <strong>Статус:</strong>
+                    {% if task.status == 'completed' %}
+                        <span class="badge bg-success">Завершено</span>
+                    {% elif task.status == 'failed' %}
+                        <span class="badge bg-danger">Ошибка: {{ task.error_message }}</span>
+                    {% elif 'downloading' in task.status %}
+                        <span class="badge bg-info">{{ task.status }}</span>
+                        <div class="progress mt-2">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 <!--style="width: {{ task.status|slice:'12:-1' }}%">-->
+                                {{ task.status|slice:'12:-1' }}%
+                            </div>
+                        </div>
+                    {% else %}
+                        <span class="badge bg-warning">В обработке</span>
+                    {% endif %}
+                </div>
+                
+                {% if task.status == 'completed' and task.file_path %}
+                    <a href="{% url 'download_file' task.id %}" class="btn btn-success">Скачать файл</a>
+                {% endif %}
+                
+                <a href="{% url 'index' %}" class="btn btn-primary">Назад</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if 'downloading' in task.status %}
+<script>
+setTimeout(function() {
+    window.location.reload();
+}, 3000);
+</script>
+{% endif %}
+{% endblock %}
