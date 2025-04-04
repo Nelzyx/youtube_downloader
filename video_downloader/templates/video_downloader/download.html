@@ -40,7 +40,9 @@
                     <a href="{% url 'download_file' task.id %}" class="btn btn-success">Скачать файл</a>
                 {% endif %}
                 
-                <a href="{% url 'index' %}" class="btn btn-primary">Назад</a>
+                <a href="{% url 'download_file' task.id %}" class="btn btn-success">
+                    Скачать ({{ task.format|upper }})
+                </a>
             </div>
         </div>
     </div>

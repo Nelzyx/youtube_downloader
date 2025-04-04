@@ -12,7 +12,7 @@
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="url" class="form-label">Ссылка на видео:</label>
-                        <input type="url" class="form-control" id="url" name="url" required>
+                        <input type="url" name="url" placeholder="YouTube URL" class="form-control" id="url" name="url" required>
                     </div>
                     
                     <div class="row mb-3">
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary">Скачать</button>
+                    <button type="submit" class="btn btn-primary" style="float: right;">Скачать</button>
                 </form>
             </div>
         </div>
@@ -58,14 +58,18 @@
                         {% for task in tasks %}
                         <tr>
                             <td>{{ task.url|truncatechars:30 }}</td>
-                            <td>{{ task.get_format_type_display }}</td>
+                            <td>
+                                {% if task.format %}
+                                    <span class="badge bg-info">{{ task.format|upper }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">N/A</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 {% if task.status == 'completed' %}
                                     <span class="badge bg-success">Завершено</span>
                                 {% elif task.status == 'failed' %}
                                     <span class="badge bg-danger">Ошибка</span>
-                                {% elif 'downloading' in task.status %}
-                                    <span class="badge bg-info">{{ task.status }}</span>
                                 {% else %}
                                     <span class="badge bg-warning">В обработке</span>
                                 {% endif %}
