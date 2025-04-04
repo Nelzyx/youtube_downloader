@@ -10,6 +10,7 @@ class DownloadTask(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     file_path = models.CharField(max_length=500, blank=True, null=True)
     error_message = models.TextField(blank=True, null=True)
+    actual_format = models.CharField(max_length=10, blank=True)
 
     def __str__(self):
         return f"{self.url} - {self.get_format_type_display()}"

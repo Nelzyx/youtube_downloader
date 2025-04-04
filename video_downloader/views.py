@@ -32,9 +32,21 @@ def download_video(task_id):
             'outtmpl': 'media/downloads/%(title)s.%(ext)s',
             'quiet': True,
         }
+
+        if task.format == 'audio':
+            # Скачиваем лучшее аудио в оригинальном формате (без конвертации)
+            ydl_opts.update({
+                'format': 'ba',  # bestaudio - лучшее аудио без видео
+                'extractaudio': True,  # Извлекаем аудио
+                'audioformat': 'best',  # Оставляем оригинальный формат (m4a/webm)
+                'nopostoverwrites': True,  # Не перезаписывать пост-обработкой
+            })
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(task.url, download=False)
+            #info = ydl.extract_info(task.url, download=False)
+            info = ydl.extract_info(task.url, download=True)
+            filename = ydl.prepare_filename(info)
+            task.actual_format = filename.split('.')[-1]  # Сохраняем реальное расширение
             
             # Определяем формат
             if 'entries' in info:  # Для плейлистов
